@@ -63,7 +63,7 @@ void main(){
 
     FILE *file_ptr;
 
-    file_ptr=fopen("fertility_Diagnosis_Data_Group5_8.txt","r");
+    file_ptr=fopen("fertility_Diagnosis_Data_Group9_11.txt","r");
     if (file_ptr==NULL)
     {
         printf("File could not be opened \n");
@@ -299,15 +299,15 @@ void testFeature(
       }
       else if(testing_input[i][0] == 0.33){
       total_0 = calculated_training_0[0][1];
-      total_1 = calculated_training_0[0][1];
+      total_1 = calculated_training_1[0][1];
       }
       else if(testing_input[i][0] == -0.33){
       total_0 = calculated_training_0[0][2];
-      total_1 = calculated_training_0[0][2];
+      total_1 = calculated_training_1[0][2];
       }
       else if(testing_input[i][0] == -1){
         total_0 = calculated_training_0[0][3];
-        total_1 = calculated_training_0[0][3];
+        total_1 = calculated_training_1[0][3];
       }
 
       //Feature 3
