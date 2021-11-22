@@ -91,11 +91,8 @@ int main()
 
         for(int i=0;i<8;i++)
         {
-            while(exinput[i]!=0||1)
-            {
-                printf("\nEnter your 8 bit exponent input Bit[%d]: ",i+1); // Ask user to input 8 bit exponent, stored in exinput array
-                scanf("%lf",&exinput[i]);
-            }
+            printf("\nEnter your 8 bit exponent input Bit[%d]: ",i+1); // Ask user to input 8 bit exponent, stored in exinput array
+            scanf("%lf",&exinput[i]);
         }
 
         for(int i=0;i<23;i++)
