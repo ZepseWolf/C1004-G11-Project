@@ -60,7 +60,8 @@ int main()
         binaryrep(decint, frac, dnum, fnum, mantissa,&aexponent,&exnum,exponent); //generates, the actual exponent, 8 bit exponent in an array, and mantissa in an array
         biasedexpo=aexponent+127; //compute the biased exponent by adding 127 to the actual aexponent
         decimalconver(biasedexpo,exponent,&exnum);//convert the decimal biased exponent to binary amd store it in the array exponent
-
+        
+        printf("\n==============================================================");
         printf("\nThe input of the decimal number is: %g",input);   //Prints the user input
         printf("\nAfter conversion, the 1-bit signbit is: %d",sign);//Prints the sign bit
         printf("\nThe actual exponent is: %d", aexponent);          //Prints the actual exponent
@@ -84,6 +85,8 @@ int main()
         {
             printf("%g",mantissa[i]);
         } 
+        printf("\n==============================================================");
+
     }
 
     if(choice == 2)       //User chooses to convert IEEE 754 binary floating point number to decimal
@@ -151,7 +154,7 @@ int main()
         }
 
 
-
+        printf("\n===============================================================");
         printf("\nYour input is: %d ",sign2); //Prints out the user input
         for(int i=0;i<8;i++)
         {
@@ -164,29 +167,31 @@ int main()
         }
 
 
-    binaryconver(exinput, &exposum);  //convert the 8bit exponent input by user to decimal
-    actexpo = exposum - 127; //calculating the actual exponent by subtracting the bias away
-    mantissaconver(mantinput,actexpo, &mantisum); //converts the whole mantisa, including the 1. in the front to decimal
-    sum(mantisum,actexpo,&totalsum); //computing the decimal value of the IEEE754 binary floating number.
+        binaryconver(exinput, &exposum);  //convert the 8bit exponent input by user to decimal
+        actexpo = exposum - 127; //calculating the actual exponent by subtracting the bias away
+        mantissaconver(mantinput,actexpo, &mantisum); //converts the whole mantisa, including the 1. in the front to decimal
+        sum(mantisum,actexpo,&totalsum); //computing the decimal value of the IEEE754 binary floating number.
 
-    if(sign2==1)
-    {
-        totalsum= totalsum*-1; //if sign userinput is 1, converts the decimal value to negative
-    }
+        if(sign2==1)
+        {   
+            totalsum= totalsum*-1; //if sign userinput is 1, converts the decimal value to negative
+        }
 
-    printf("\nBefore conversion, the 1 bit sign bit is: %d",sign2); //Prints out the sign bit
-    printf("\nThe 8 bit biased exponent is: ");                     //Prints out the 8bit biased exponent
-    for(int i=0;i<8;i++)
-    {
-        printf("%g",exinput[i]);
-    } 
-    printf("\nThe actual exponent is: %d", actexpo);                //Prints out the actual exponent
-    printf("\nThe 23 bit fraction is: ");                           //Prints out the mantissa
-    for(int i=0;i<23;i++)
-    {
-        printf("%g",mantinput[i]);
-    }
-    printf("\nAfter conversion, the decimal number is: %lf", totalsum);//Prints out the decimal value of the IEEE754 Binary Floating point number
+        printf("\nBefore conversion, the 1 bit sign bit is: %d",sign2); //Prints out the sign bit
+        printf("\nThe 8 bit biased exponent is: ");                     //Prints out the 8bit biased exponent
+        for(int i=0;i<8;i++)
+        {
+            printf("%g",exinput[i]);
+        } 
+        printf("\nThe actual exponent is: %d", actexpo);                //Prints out the actual exponent
+        printf("\nThe 23 bit fraction is: ");                           //Prints out the mantissa
+        for(int i=0;i<23;i++)
+        {
+            printf("%g",mantinput[i]);
+        }
+    
+        printf("\nAfter conversion, the decimal number is: %lf", totalsum);//Prints out the decimal value of the IEEE754 Binary Floating point number
+        printf("\n==============================================================");
 
     }
     return 0;
