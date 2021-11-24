@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
+#include <string.h>
 void decimalconver(double n, double d[], int *k);                                                                   // Function that converts the integral part of the decimal to binary
 void fractconver(double n, double d[], int*k);                                                                      // Function that converts the fractional part of the decimal to binary
 void binaryrep(double d[], double f[],int dnum, int fnum, double mantissa[],int *exponent, int *exnum, double ex[]);// Function that converts the decimal of the exponent and
@@ -21,6 +23,7 @@ int main()
     int sign = 0;                                // sign bit(choice1)
     int sign2=0,exposum=0, actexpo;              // sign bit(choice 2), exposum = exponent+biased, actexpo = actual exponent
     double exinput[9], mantinput[23], totalsum=0, mantisum=1; //exponent input array, mantissa input array, total sum = decimal of IEEE 754 floating number, mantisum = decimal value of the mantissa + 1
+    char expoinput[9], maninput[24], error[]="\0"; //string inputs for mantissa and exponents. error array to reset the user input if they key in an illegal input
 
     printf("\nPlease select 1 to convert from dec to IEEE 754 binary floating number, 2 for to convert from IEEE 754 binary floating number into decimal number.");
     printf("\n\nEnter an option: ");
@@ -88,22 +91,68 @@ int main()
         printf("\nPlease input a 32 bit IEEE 754 binary floating point Number: ");
         printf("\nSign bit: ");   //Ask user to input sign bit first
         scanf("%d",&sign2);
+        
+
+        //Input of 8 bit Exponent
+        while(strlen(expoinput) != 8) //checks if user inputs 8 bits
+        {
+        printf("\nEnter your 8 bit exponent input: ");  
+        scanf("%s",expoinput);
+        }
+
+        for(int i=0;i<8;i++) //check if user inputs binary digits (1s or 0s)
+        {
+            if((expoinput[i] != '1' ) && (expoinput[i] != '0' ))
+            {
+                printf("\nPlease re-enter your 8 bits binary exponent again!");
+                strcpy(expoinput, error); //clears the user input
+                while(strlen(expoinput) != 8)//rechecks if user inputs 8 bits
+                {
+                    printf("\nEnter your 8 bit exponent input: "); 
+                    scanf("%s",expoinput);
+                }
+                i=0;            //rechecks the entire input again
+            }
+        }
 
         for(int i=0;i<8;i++)
         {
-            printf("\nEnter your 8 bit exponent input Bit[%d]: ",i+1); // Ask user to input 8 bit exponent, stored in exinput array
-            scanf("%lf",&exinput[i]);
+            exinput[i] = expoinput[i]-'0';
+        }
+
+
+
+        //Input of 23 bit Mantissa
+        while(strlen(maninput) != 23) //checks if user input 23 bits
+        {
+            printf("\nEnter your 23 bit Mantissa Bit: ");
+            scanf("%s",maninput);
+        }
+        for(int i=0;i<23;i++) //check if user inputs binary digits (1s or 0s)
+        {
+            if((maninput[i] != '1' ) && (maninput[i] != '0' ))
+            {
+                printf("\nPlease re-enter your 23 bits mantissa again!");
+                strcpy(maninput, error);//clears the user input
+                while(strlen(maninput) != 23)//rechecks if user inputs 23 bits
+                {
+                    printf("\nEnter your 23 bit Mantissa Bit: "); 
+                    scanf("%s",maninput);
+                }
+                i=0;        //rechecks the entire input again
+            }
         }
 
         for(int i=0;i<23;i++)
         {
-            printf("\nEnter your 23 bit Mantissa Bit[%d]: ",i+1); // Ask user to input 23 bit mantissa, stored in mantinput array
-            scanf("%lf",&mantinput[i]);
+            //printf("\nEnter your 23 bit Mantissa Bit[%d]: ",i+1); // Ask user to input 23 bit mantissa, stored in mantinput array
+           //scanf("%lf",&mantinput[i]);
+           mantinput[i]=maninput[i]-'0';
         }
 
 
 
-        printf("Your input is: %d ",sign2); //Prints out the user input
+        printf("\nYour input is: %d ",sign2); //Prints out the user input
         for(int i=0;i<8;i++)
         {
             printf("%g",exinput[i]);
