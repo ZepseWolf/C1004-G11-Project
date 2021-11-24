@@ -63,7 +63,7 @@ main:
     MUL R0, R2, R0              @ multiply above result by s-s2 and store into R0
     MUL R0, R3, R0              @ multiply above result by s-s3 and store into R0
 
-    @ square root using odd number deducting looping
+    @ square root using odd number and Arithmethic Progression to derive the nth term
     MOV R1, #1                  @ store incrementing odd number starting with 1
     MOV R2, #1                  @ store square root result
     LOOP:
