@@ -29,7 +29,9 @@ int main()
     printf("\n\nEnter an option: ");
     scanf("%d",&choice);
 
-   
+ //==================================================================================================================================================================================================================================
+ // Coversion of decimal to IEEE 754 Floating point
+
     if (choice == 1)
     {
         printf("Please input a real number: ");
@@ -88,13 +90,18 @@ int main()
         printf("\n==============================================================");
 
     }
-
-    if(choice == 2)       //User chooses to convert IEEE 754 binary floating point number to decimal
+//==================================================================================================================================================================================================================================
+//Conversion IEEE 754 binary floating point number to decimal
+    if(choice == 2)       
     {
         printf("\nPlease input a 32 bit IEEE 754 binary floating point Number: ");
         printf("\nSign bit: ");   //Ask user to input sign bit first
         scanf("%d",&sign2);
-        
+        while(sign2 != 1 && sign2 !=0)
+            {
+                printf("\nPlease re-enter your sign bit: ");
+                scanf("%d",&sign2);
+            }
 
         //Input of 8 bit Exponent
         while(strlen(expoinput) != 8) //checks if user inputs 8 bits
