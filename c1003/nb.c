@@ -4,7 +4,7 @@
 
 #define total_data_size 100
 #define testing_data_size 20
-#define training_data_size total_data_size-testing_data_size
+#define training_data_size 80
 #define feature_size 10
 #define PI 3.141592
 
@@ -31,7 +31,9 @@ void testFeature(
   double testing_input[total_data_size][feature_size],
   double calculated_training_0[feature_size][5],
   double calculated_training_1[feature_size][5],
-  double *total_error_count
+  double *total_error_count,
+  double total_training_count_0, 
+  double total_training_count_1
 );
 
 double standardGaussianDis(
@@ -63,7 +65,7 @@ void main(){
 
     FILE *file_ptr;
 
-    file_ptr=fopen("fertility_Diagnosis_Data_Group9_11.txt","r");
+    file_ptr=fopen("fertility_Diagnosis_Data_Group1_4.txt","r");
     if (file_ptr==NULL)
     {
         printf("File could not be opened \n");
@@ -86,8 +88,8 @@ void main(){
     trainFeature(total_training_count_1 ,training_input_1,calculated_training_1 );
 
     printf("\n =========================Confusion Matrix Start=========================");
-    testFeature(0, total_testing_count_0 , testing_input_0 , calculated_training_0,calculated_training_1,&total_error_count);
-    testFeature(1, total_testing_count_1 , testing_input_1 , calculated_training_0,calculated_training_1,&total_error_count);
+    testFeature(0, total_testing_count_0 , testing_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1);
+    testFeature(1, total_testing_count_1 , testing_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1);
     printf("\n ==========================Confusion Matrix End =========================");
     printf("\n Total error     : %lf %%" ,total_error_count*100/testing_data_size);
 }
@@ -285,7 +287,9 @@ void testFeature(
   double testing_input[total_data_size][feature_size],
   double calculated_training_0[feature_size][5],
   double calculated_training_1[feature_size][5],
-  double *total_error_count
+  double *total_error_count,
+  double total_training_count_0, 
+  double total_training_count_1
 ){
   int i;
   double total_0,total_1,predicted_total_count_0 =0,predicted_total_count_1=0;
@@ -396,7 +400,9 @@ void testFeature(
       //Feature 9
       total_0 *= standardGaussianDis(testing_input[i][8],calculated_training_0[8][0], calculated_training_0[8][1]);
       total_1 *= standardGaussianDis(testing_input[i][8],calculated_training_1[8][0] , calculated_training_1[8][1]);
-
+      // Mutiply total prob
+      total_0 *= (total_training_count_0/training_data_size);
+      total_1 *= (total_training_count_1/training_data_size);
       if(total_0 >total_1){
         //Predicted 0
         predicted_total_count_0 ++ ;
@@ -411,7 +417,9 @@ void testFeature(
 
 double standardGaussianDis(double x, double variance , double mean){
   double cal = 0;
-  cal = exp( ( pow( (x - mean)/variance,2))/-2)/sqrt(2*PI) ; 
+  double z=( x-mean)/variance;
+  // cal = expl( ( pow( (x - mean)/variance,2))/-2)/sqrt(2*PI) ; 
+  cal = 1/sqrt(2*PI*variance*variance)*expl(-0.5*pow(z,2));
   // printf("\n standard gaussian dis : %lf",cal);
   return cal;
 }
