@@ -9,7 +9,7 @@ void triggerSequence(int* count,int freq);
 
 int main(void)
 {   // Default inputs
-    int count = 1 , holding= 0 , freq = 500 , choice =0;
+    int count = 1 , holding= 0 , freq = 500;
     
     wiringPiSetupGpio();         // Init wiringPi
     pinMode(ledPin, OUTPUT);     // Set Pin 18 as output for led
