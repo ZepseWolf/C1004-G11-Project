@@ -17,8 +17,6 @@
 #include <stdlib.h>
 #include <time.h>
 #define total_data_size 100
-// #define testing_data_size 20
-// #define training_data_size 80
 #define feature_size 10
 #define PI 3.14159265
 
@@ -189,14 +187,12 @@ void sortByClassification( int totalnum ,int *count0 ,int *count1 ,double raw_in
         if(raw_input[i][9] == 0){
             for( ii = 0 ; ii < feature_size ;ii++ ){
                 input_0[*count0][ii] = raw_input[i][ii] ;
-            //    printf("\n %lf , II = %d , counter =%d" ,input_0[i][count0] , ii , count0);
             }
             *count0 = *count0+1;
         }
         else if (raw_input[i][9] == 1){
             for( ii = 0 ; ii < feature_size ;ii++ ){
                 input_1[*count1][ii] = raw_input[i][ii] ;
-                //  printf("\n it worked %lf" ,raw_input[i][ii]);
             }
             *count1 = *count1+1;;
         }
@@ -208,7 +204,7 @@ void trainFeature(
   double training_input [total_data_size][feature_size],
   double calculated_training[feature_size][5]
   ){
-    // Train features 1 , 3 , 4 , 5 , 6 , 7 , 8
+    // Train features 1 , 3 , 4 , 5 , 6 , 7 , 8 , 2 , 9
     int i ,ii ;
     //Feature  1
     double f1_count1 = 0,f1_count2 = 0,f1_count3 = 0,f1_count4 = 0 ;
@@ -248,7 +244,6 @@ void trainFeature(
       //Feature 3
       if(training_input[i][2] == 0){
         f3_count1++;
-        // printf("\n it worked ?? %d" ,f1_count1);
       }
       else if(training_input[i][2] == 1){
         f3_count2++;
@@ -257,7 +252,6 @@ void trainFeature(
       //Feature 4
       if(training_input[i][3] == 0){
         f4_count1++;
-        // printf("\n it worked ?? %d" ,f1_count1);
       }
       else if(training_input[i][3] == 1){
         f4_count2++;
@@ -327,9 +321,8 @@ void trainFeature(
 
     f2_variance = sqrt(f2_variance/(training_size-1));
     f9_variance = sqrt(f9_variance/(training_size-1));
-
-    // printf("\n The sd of f2 =%lf  and f9 = %lf",f2_variance,f9_variance);   To remove soon
     
+    //Set condition prob into calculated_training array 
     calculated_training[0][0] = f1_count1/training_size; 
     calculated_training[0][1] = f1_count2/training_size;
     calculated_training[0][2] = f1_count3/training_size;
@@ -363,8 +356,6 @@ void trainFeature(
 
     calculated_training[8][0] = f9_variance;
     calculated_training[8][1] = f9_total/training_size;
-    // printf("\n f2 average: %lf ", f2_total/training_size); To remove soon
-    
 }
 
 void testFeature( 
@@ -487,7 +478,7 @@ void testFeature(
       //Feature 9
       total_0 *= standardGaussianDis(testing_input[i][8],calculated_training_0[8][0], calculated_training_0[8][1]);
       total_1 *= standardGaussianDis(testing_input[i][8],calculated_training_1[8][0] , calculated_training_1[8][1]);
-      // Mutiply total prob
+      // Mutiply total count prob
       total_0 *= (total_training_count_0/training_data_size);
       total_1 *= (total_training_count_1/training_data_size);
       if(total_0 >total_1){
@@ -497,23 +488,18 @@ void testFeature(
         //Predicted 1
         predicted_total_count_1 ++ ;
       }
-    //end of loop
+    //End of loop
   }
   errorCal(classification,predicted_total_count_0,predicted_total_count_1, total_error_count, set);
 }
 
 double standardGaussianDis(double x, double sd , double mean){
   double cal = 0;
-  double z=( x-mean)/sd;
   cal = expl( ( pow( (x - mean)/sd,2))/-2)/sqrt(2*PI) ; 
-  // cal = 1/sqrt(2*PI*sd*sd)*expl(-0.5*pow(z,2));
-  // printf("\n standard gaussian dis : %lf",cal);
   return cal;
 }
 
 void errorCal(int real_classification, double predicted_total_count_0 ,double predicted_total_count_1 ,double *total_error_count, int set){
-  // static x ;
-  // double c = ;
   double size;
   if(set==0)
   {
@@ -523,7 +509,7 @@ void errorCal(int real_classification, double predicted_total_count_0 ,double pr
   {
     size = testing_data_size;
   }
-
+  // Real vs predicted , recorded down 
   if(real_classification == 0){
     *total_error_count += predicted_total_count_1;
     printf("\n True negatives  : %lf %%",predicted_total_count_0*100/size);
