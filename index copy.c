@@ -9,7 +9,7 @@ void triggerSequence(int* count,int freq);
 
 int main(void)
 {   // Default inputs
-    int count = 1 , holding= 0 , freq = 500;
+    int count = 1 , holding= 0 , freq = 500 , choice =0;
     
     wiringPiSetupGpio();         // Init wiringPi
     pinMode(ledPin, OUTPUT);     // Set Pin 18 as output for led
@@ -39,11 +39,13 @@ int main(void)
     while(1)
     {   
         delay(10); // Due to high tick , machine may malfunction hence delayed every action
-        if (digitalRead(butPin) && holding == 1){
+        if (digitalRead(butPin)){
+            if(holding == 1){
                 // Enter Click function   
                 triggerSequence(&count,freq);
                 count++;
                 holding = 0;
+            }
         }
         else{
             // Detect Clicked 
