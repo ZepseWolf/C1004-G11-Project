@@ -15,8 +15,10 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-
+#include <time.h>
 #define total_data_size 100
+//#define testing_data_size 50
+//#define training_data_size 50
 #define feature_size 10
 #define PI 3.14159265
 
@@ -67,6 +69,8 @@ void errorCal(
 int training_data_size, testing_data_size;
 
 void main(){
+    clock_t start,end;
+    double cpu_time_used;
     int i ,ii , total_training_count_0=0, total_training_count_1=0,total_testing_count_0=0,total_testing_count_1=0; 
     double* season_of_0; 
     // double input[total_data_size][feature_size];
@@ -82,7 +86,7 @@ void main(){
     int trainingset=0, testingset=1;
     double summary[2][5];
     char *label[5]={"50/50","60/40","70/30","80/20","90/10"};
-
+    start = clock();
     for(int counter = 0; counter < 5; counter++)
     { switch(counter)
       {
@@ -171,7 +175,9 @@ void main(){
         printf("\t\t %lf",summary[i+1][j]);
       }
     }
-
+  end = clock();
+  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+  printf("\n\nTime taken: %lf",cpu_time_used);
 
 }
 
