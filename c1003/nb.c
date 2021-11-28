@@ -15,11 +15,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include <time.h>
 
 #define total_data_size 100
-#define testing_data_size 50
-#define training_data_size 50
 #define feature_size 10
 #define PI 3.14159265
 
@@ -66,8 +63,11 @@ void errorCal(
   int set
 );
 
+
+int training_data_size, testing_data_size;
+
 void main(){
-    int i ,ii , total_training_count_0, total_training_count_1,total_testing_count_0,total_testing_count_1; 
+    int i ,ii , total_training_count_0=0, total_training_count_1=0,total_testing_count_0=0,total_testing_count_1=0; 
     double* season_of_0; 
     // double input[total_data_size][feature_size];
     double raw_training_input[total_data_size][feature_size];
@@ -80,12 +80,44 @@ void main(){
     double calculated_training_1[feature_size][5]; //To set Conditional Probility 
     double total_error_count =0 ;
     int trainingset=0, testingset=1;
-    double time_spent=0.0;      /*to calculate time for algorithm*/
+    double summary[2][5];
+    char *label[5]={"50/50","60/40","70/30","80/20","90/10"};
 
-    clock_t begin =clock();     /*start timimg*/
+    for(int counter = 0; counter < 5; counter++)
+    { switch(counter)
+      {
+          case 0:
+          training_data_size = 50;
+          testing_data_size = 50;
+          printf("\n\n    For 50/50");
+          break;
 
+          case 1:
+          training_data_size = 60;
+          testing_data_size = 40;
+          printf("\n\n    For 60/40");
+          break;
+
+          case 2:
+          training_data_size = 70;
+          testing_data_size = 30;
+          printf("\n\n    For 70/30");
+          break;
+
+          case 3:
+          training_data_size = 80;
+          testing_data_size = 20;
+          printf("\n\n    For 80/20");
+          break;
+
+          case 4:
+          training_data_size = 90;
+          testing_data_size = 10;
+          printf("\n\n    For 90/10");
+          break;
+      }
+                                        
     FILE *file_ptr;
-
     file_ptr=fopen("fertility_Diagnosis_Data_Group9_11.txt","r");
     if (file_ptr==NULL)
     {
@@ -102,18 +134,22 @@ void main(){
     }
     fclose(file_ptr);
     
+
+
     sortByClassification( training_data_size , &total_training_count_0, &total_training_count_1 , raw_training_input , training_input_0 , training_input_1); // Output will be count0 , count1 , training_input_0, training_input_1
     sortByClassification( testing_data_size , &total_testing_count_0, &total_testing_count_1 , raw_testing_input , testing_input_0 , testing_input_1); // Output will be count0 , count1 , training_input_0, training_input_1
     
     trainFeature(total_training_count_0 ,training_input_0,calculated_training_0 );
     trainFeature(total_training_count_1 ,training_input_1,calculated_training_1 );
 
-    /*printf("\n =========================Confusion Matrix Start=========================");
+    total_error_count = 0;//reset
+
+    printf("\n =========================Confusion Matrix Start=========================");
     testFeature(0, total_testing_count_0 , testing_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
     testFeature(1, total_testing_count_1 , testing_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
     printf("\n ==========================Confusion Matrix End =========================");
-    printf("\n Total error for testing set   : %lf %%" ,total_error_count*100/testing_data_size);*/
-
+    printf("\n Total error for testing set   : %lf %%" ,total_error_count*100/testing_data_size);
+    summary[testingset][counter] = total_error_count*100/testing_data_size;
     total_error_count = 0; //reset 
 
     printf("\n\n =========================Confusion Matrix Start=========================");
@@ -121,10 +157,22 @@ void main(){
     testFeature(1, total_training_count_1 , training_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
     printf("\n ==========================Confusion Matrix End =========================");
     printf("\n Total error for training set   : %lf %%" ,total_error_count*100/training_data_size);
+    summary[trainingset][counter]=total_error_count*100/training_data_size;
+  }
 
-    clock_t end = clock();      /*end timimg*/
-    time_spent += (double)(end-begin)/CLOCKS_PER_SEC;
-    printf("\n\n Time taken to complete entire program is %f seconds\n", time_spent);
+
+    printf("\n\n\nCase \t\tTraining Error \t\tTesting Error");
+    for(i=0;i<1;i++)
+    {
+      for(int j=0;j<5;j++)
+      {
+        printf("\n%s",label[j]);
+        printf("\t\t %lf",summary[i][j]);
+        printf("\t\t %lf",summary[i+1][j]);
+      }
+    }
+
+
 }
 
 void sortByClassification( int totalnum ,int *count0 ,int *count1 ,double raw_input[total_data_size][feature_size] ,double input_0[total_data_size][feature_size], double input_1[total_data_size][feature_size]){
@@ -473,13 +521,13 @@ void errorCal(int real_classification, double predicted_total_count_0 ,double pr
 
   if(real_classification == 0){
     *total_error_count += predicted_total_count_1;
-    printf("\n True negatives  : %lf %%",predicted_total_count_0*100/training_data_size);
-    printf("\n False positives : %lf %%",predicted_total_count_1*100/training_data_size);
+    printf("\n True negatives  : %lf %%",predicted_total_count_0*100/size);
+    printf("\n False positives : %lf %%",predicted_total_count_1*100/size);
   }
   else if(real_classification == 1){
     *total_error_count += predicted_total_count_0;
-    printf("\n True positives  : %lf %%",predicted_total_count_1*100/training_data_size);
-    printf("\n False negatives : %lf %%",predicted_total_count_0*100/training_data_size);
+    printf("\n True positives  : %lf %%",predicted_total_count_1*100/size);
+    printf("\n False negatives : %lf %%",predicted_total_count_0*100/size);
   }
   else{
     printf("\n No such classification exist!");
