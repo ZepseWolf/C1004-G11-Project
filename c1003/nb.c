@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define total_data_size 100
 #define testing_data_size 50
@@ -79,6 +80,9 @@ void main(){
     double calculated_training_1[feature_size][5]; //To set Conditional Probility 
     double total_error_count =0 ;
     int trainingset=0, testingset=1;
+    double time_spent=0.0;      /*to calculate time for algorithm*/
+
+    clock_t begin =clock();     /*start timimg*/
 
     FILE *file_ptr;
 
@@ -117,6 +121,10 @@ void main(){
     testFeature(1, total_training_count_1 , training_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
     printf("\n ==========================Confusion Matrix End =========================");
     printf("\n Total error for training set   : %lf %%" ,total_error_count*100/training_data_size);
+
+    clock_t end = clock();      /*end timimg*/
+    time_spent += (double)(end-begin)/CLOCKS_PER_SEC;
+    printf("\n\n Time taken to complete entire program is %f seconds\n", time_spent);
 }
 
 void sortByClassification( int totalnum ,int *count0 ,int *count1 ,double raw_input[total_data_size][feature_size] ,double input_0[total_data_size][feature_size], double input_1[total_data_size][feature_size]){
