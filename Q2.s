@@ -1,4 +1,4 @@
-.data               @ to define the variables we will be using
+.data               @ data section to store initialized data or constants
 stringinputlength1: .asciz "\nEnter a positive decimal number Length1 (meters): "
 stringinputwidth1: .asciz "\nEnter a positive decimal number Width1  (meters): "
 stringoutput: .asciz "\nThe total area of 2 shapes is (sqm): %d\n"
@@ -51,7 +51,7 @@ main:
     LSR R1, R1, #1              @ logical shift right R1 by 1 bit; divide by 2
     STR R1, [R0]                @ store result value into  s
 
-    @ calculate area of triange triarea (sqrt formula)
+    @ calculate area of triangle triarea (sqrt formula)
     LDR R1, =s1                 @ load address of s1 into R1
     LDR R1, [R1]                @ load value of s1 into R1
     LDR R0, [R0]                @ load value of s into R0
