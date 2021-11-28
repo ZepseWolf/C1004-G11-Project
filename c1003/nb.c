@@ -17,8 +17,8 @@
 #include <stdlib.h>
 #include <time.h>
 #define total_data_size 100
-//#define testing_data_size 50
-//#define training_data_size 50
+// #define testing_data_size 20
+// #define training_data_size 80
 #define feature_size 10
 #define PI 3.14159265
 
@@ -53,7 +53,7 @@ void testFeature(
 
 double standardGaussianDis(
   double x, 
-  double variance , 
+  double sd , 
   double mean
 );
 
@@ -73,7 +73,6 @@ void main(){
     double cpu_time_used;
     int i ,ii , total_training_count_0=0, total_training_count_1=0,total_testing_count_0=0,total_testing_count_1=0; 
     double* season_of_0; 
-    // double input[total_data_size][feature_size];
     double raw_training_input[total_data_size][feature_size];
     double raw_testing_input[total_data_size][feature_size];
     double training_input_0[total_data_size][feature_size];
@@ -503,11 +502,11 @@ void testFeature(
   errorCal(classification,predicted_total_count_0,predicted_total_count_1, total_error_count, set);
 }
 
-double standardGaussianDis(double x, double variance , double mean){
+double standardGaussianDis(double x, double sd , double mean){
   double cal = 0;
-  double z=( x-mean)/variance;
-  // cal = expl( ( pow( (x - mean)/variance,2))/-2)/sqrt(2*PI) ; 
-  cal = 1/sqrt(2*PI*variance*variance)*expl(-0.5*pow(z,2));
+  double z=( x-mean)/sd;
+  cal = expl( ( pow( (x - mean)/sd,2))/-2)/sqrt(2*PI) ; 
+  // cal = 1/sqrt(2*PI*sd*sd)*expl(-0.5*pow(z,2));
   // printf("\n standard gaussian dis : %lf",cal);
   return cal;
 }
