@@ -19,7 +19,7 @@
 #define total_data_size 100
 #define feature_size 10
 #define PI 3.14159265
-
+#define NUM_COMMANDS 6
 
 void main();
 void sortByClassification(
@@ -82,6 +82,8 @@ void main(){
     double total_error_count =0 ;
     int trainingset=0, testingset=1;
     double summary[2][5];
+    char *xAxisPlotTraining[5] = {"50","60","70","80","90"};
+    char *xAxisPlotTesting[5] = {"50","40","30","20","10"};
     char *label[5]={"50/50","60/40","70/30","80/20","90/10"};
     start = clock();
     for(int counter = 0; counter < 5; counter++)
@@ -163,19 +165,53 @@ void main(){
 
 
     printf("\n\n\nCase \t\tTraining Error \t\tTesting Error");
-    for(i=0;i<1;i++)
-    {
       for(int j=0;j<5;j++)
       {
         printf("\n%s",label[j]);
         printf("\t\t %lf",summary[i][j]);
         printf("\t\t %lf",summary[i+1][j]);
       }
+    /*print graph for Testing Dataset and error probability*/
+    char * commandsForGnuplot[] = {"set title \"Testing Dataset\"", 
+    "set xrange [10:50]",
+    "set yrange [0:30]",
+    "set xlabel \"Number of Test Data\"", 
+    "set ylabel \"Error Probability in Percentage\"", 
+    "plot 'data.temp' title 'Testing' linecolor 24 linewidth 2 smooth csplines"};
+    FILE * temp = fopen("data.temp", "w");
+    FILE * gnuPlotting = _popen ("\"C:\\Program Files\\gnuplot\\bin\\gnuplot.exe\" -persistent", "w"); /*to amend the file location as to where your gnuplot.exe lies*/
+    for(int i = 0;i < 5; i++)
+    {
+      fprintf(temp, "%s %f\n", xAxisPlotTesting[i], summary[1][i]);
     }
+      for (i=0; i < NUM_COMMANDS; i++)
+    {
+      fprintf(gnuPlotting, "%s \n", commandsForGnuplot[i]); //Send commands to gnuplot one by one.
+    }
+    fclose(gnuPlotting);
+
+    /*print graph for Training Dataset and Error Probability */
+    char * commandsForGnuplot2[] = {"set title \"Training Dataset\"", 
+    "set xrange [50:90]",
+    "set yrange [0:30]",
+    "set xlabel \"Number of Training Data\"", 
+    "set ylabel \"Error Probability in Percentage\"", 
+    "plot 'data2.temp' title 'Training' linecolor 24 linewidth 2 smooth csplines"};
+    FILE * temp2 = fopen("data2.temp", "w");
+    FILE * gnuPlot = _popen ("\"C:\\Program Files\\gnuplot\\bin\\gnuplot.exe\" -persistent", "w"); /*to amend the file location as to where your gnuplot.exe lies*/
+    for(int i = 0;i<5; i++)
+    {
+      fprintf(temp2, "%s %f\n", xAxisPlotTraining[i], summary[0][i]);
+    }
+    for (i=0; i < NUM_COMMANDS; i++)
+    {
+      fprintf(gnuPlot, "%s \n", commandsForGnuplot2[i]); //Send commands to gnuplot one by one.
+    }
+    fclose(gnuPlot);
+
   end = clock();
   cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
   printf("\n\nTime taken: %lf",cpu_time_used);
-
 }
 
 void sortByClassification( int totalnum ,int *count0 ,int *count1 ,double raw_input[total_data_size][feature_size] ,double input_0[total_data_size][feature_size], double input_1[total_data_size][feature_size]){
