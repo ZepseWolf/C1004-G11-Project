@@ -1,12 +1,26 @@
+
+    /****************************************************************************************************************************************************************************/
+    /*Read data from input file                                                                                                                                                 */
+    /* Feature 1 :Season of analysis                           - Winter= -1 Spring= -0.33 Summer= 0.33 Fall= 1                                                                  */
+    /* Feature 2 :Age of Analysis                              - Age 18 to 36 : 0 to 1                                                                                          */
+    /* Feature 3 :Childish Disease                             - Yes=0, No=1                                                                                                    */
+    /* Feature 4 :Accident or serious trauma                   - Yes=0, No=1                                                                                                    */
+    /* Feature 5 :Surgical Intervention                        - Yes=0, No=1                                                                                                    */
+    /* Feature 6 :High fevers in last year                     - Less than three months ago= -1 More than three months ago= 0 No= 1                                             */
+    /* Feature 7 :Frequency of alcohol consumption             - Several times a day : 0.2 Every day : 0.4 Several times a week :0.6 Once a week :0.8 Hardly ever or never : 1  */
+    /* Feature 8 :Smoking Habit                                - Never : -1 Occasional : 0 Daily : 1                                                                            */
+    /* Feature 9 :Number of hours spent sitting per day        - Ene-16 ( 0 range to 1)                                                                                         */
+    /* Outcome   :Semen Diagnosis                              - Altered=1, Normal=0                                                                                            */
+    /****************************************************************************************************************************************************************************/
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 
 #define total_data_size 100
-#define testing_data_size 20
-#define training_data_size 80
+#define testing_data_size 50
+#define training_data_size 50
 #define feature_size 10
-#define PI 3.141592
+#define PI 3.14159265
 
 
 void main();
@@ -33,7 +47,8 @@ void testFeature(
   double calculated_training_1[feature_size][5],
   double *total_error_count,
   double total_training_count_0, 
-  double total_training_count_1
+  double total_training_count_1,
+  int set
 );
 
 double standardGaussianDis(
@@ -46,7 +61,8 @@ void errorCal(
   int real_classification, 
   double predicted_total_count_0 ,
   double predicted_total_count_1, 
-  double *total_error_count
+  double *total_error_count,
+  int set
 );
 
 void main(){
@@ -62,10 +78,11 @@ void main(){
     double calculated_training_0[feature_size][5]; //To set Conditional Probility 
     double calculated_training_1[feature_size][5]; //To set Conditional Probility 
     double total_error_count =0 ;
+    int trainingset=0, testingset=1;
 
     FILE *file_ptr;
 
-    file_ptr=fopen("fertility_Diagnosis_Data_Group1_4.txt","r");
+    file_ptr=fopen("fertility_Diagnosis_Data_Group9_11.txt","r");
     if (file_ptr==NULL)
     {
         printf("File could not be opened \n");
@@ -87,11 +104,19 @@ void main(){
     trainFeature(total_training_count_0 ,training_input_0,calculated_training_0 );
     trainFeature(total_training_count_1 ,training_input_1,calculated_training_1 );
 
-    printf("\n =========================Confusion Matrix Start=========================");
-    testFeature(0, total_testing_count_0 , testing_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1);
-    testFeature(1, total_testing_count_1 , testing_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1);
+    /*printf("\n =========================Confusion Matrix Start=========================");
+    testFeature(0, total_testing_count_0 , testing_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
+    testFeature(1, total_testing_count_1 , testing_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
     printf("\n ==========================Confusion Matrix End =========================");
-    printf("\n Total error     : %lf %%" ,total_error_count*100/testing_data_size);
+    printf("\n Total error for testing set   : %lf %%" ,total_error_count*100/testing_data_size);*/
+
+    total_error_count = 0; //reset 
+
+    printf("\n\n =========================Confusion Matrix Start=========================");
+    testFeature(0, total_training_count_0 , training_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
+    testFeature(1, total_training_count_1 , training_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
+    printf("\n ==========================Confusion Matrix End =========================");
+    printf("\n Total error for training set   : %lf %%" ,total_error_count*100/training_data_size);
 }
 
 void sortByClassification( int totalnum ,int *count0 ,int *count1 ,double raw_input[total_data_size][feature_size] ,double input_0[total_data_size][feature_size], double input_1[total_data_size][feature_size]){
@@ -289,7 +314,8 @@ void testFeature(
   double calculated_training_1[feature_size][5],
   double *total_error_count,
   double total_training_count_0, 
-  double total_training_count_1
+  double total_training_count_1,
+  int set
 ){
   int i;
   double total_0,total_1,predicted_total_count_0 =0,predicted_total_count_1=0;
@@ -412,7 +438,7 @@ void testFeature(
       }
     //end of loop
   }
-  errorCal(classification,predicted_total_count_0,predicted_total_count_1, total_error_count);
+  errorCal(classification,predicted_total_count_0,predicted_total_count_1, total_error_count, set);
 }
 
 double standardGaussianDis(double x, double variance , double mean){
@@ -424,19 +450,28 @@ double standardGaussianDis(double x, double variance , double mean){
   return cal;
 }
 
-void errorCal(int real_classification, double predicted_total_count_0 ,double predicted_total_count_1 ,double *total_error_count ){
+void errorCal(int real_classification, double predicted_total_count_0 ,double predicted_total_count_1 ,double *total_error_count, int set){
   // static x ;
   // double c = ;
-  
+  double size;
+  if(set==0)
+  {
+    size = training_data_size;
+  }
+  if(set==1)
+  {
+    size = testing_data_size;
+  }
+
   if(real_classification == 0){
     *total_error_count += predicted_total_count_1;
-    printf("\n True negatives  : %lf %%",predicted_total_count_0*100/testing_data_size);
-    printf("\n False positives : %lf %%",predicted_total_count_1*100/testing_data_size);
+    printf("\n True negatives  : %lf %%",predicted_total_count_0*100/training_data_size);
+    printf("\n False positives : %lf %%",predicted_total_count_1*100/training_data_size);
   }
   else if(real_classification == 1){
     *total_error_count += predicted_total_count_0;
-    printf("\n True positives  : %lf %%",predicted_total_count_1*100/testing_data_size);
-    printf("\n False negatives : %lf %%",predicted_total_count_0*100/testing_data_size);
+    printf("\n True positives  : %lf %%",predicted_total_count_1*100/training_data_size);
+    printf("\n False negatives : %lf %%",predicted_total_count_0*100/training_data_size);
   }
   else{
     printf("\n No such classification exist!");
