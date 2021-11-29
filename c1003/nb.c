@@ -61,7 +61,7 @@ void errorCal(
   double predicted_total_count_0 ,
   double predicted_total_count_1, 
   double *total_error_count,
-  int set
+  int select_data_set
 );
 
 
@@ -170,8 +170,8 @@ void main(){
     for(int j=0;j<5;j++)
     {
       printf("\n%s",label[j]);
-      printf("\t\t %lf",summary[i][j]);
-      printf("\t\t %lf",summary[i+1][j]);
+      printf("\t\t %lf",summary[0][j]);
+      printf("\t\t %lf",summary[1][j]);
     }
 
     char * commandsForGnuplot[] = {"set title \"Testing Dataset\"", 
@@ -397,15 +397,15 @@ void trainFeature(
 }
 
 void testFeature( 
-  int classification , 
-  int testing_size , 
-  double testing_input[total_data_size][feature_size],
-  double calculated_training_0[feature_size][5],
-  double calculated_training_1[feature_size][5],
-  double *total_error_count,
-  double total_training_count_0, 
-  double total_training_count_1,
-  int set
+  int classification ,  //Actual classification of the test_input
+  int testing_size ,    //For the loop
+  double testing_input[total_data_size][feature_size], // The testing data set
+  double calculated_training_0[feature_size][5], // Calculated conditional probability of 0
+  double calculated_training_1[feature_size][5], // Calculated conditional probability  of 1
+  double *total_error_count,  //Output for counting total error
+  double total_training_count_0, // For the P(Y) of 0
+  double total_training_count_1, // For the P(Y) of 1
+  int set //For error
 ){
   int i;
   double total_0,total_1,predicted_total_count_0 =0,predicted_total_count_1=0;
@@ -538,19 +538,19 @@ double standardGaussianDis(double x, double sd , double mean){
 }
 
 void errorCal(
-  int real_classification, 
-  double predicted_total_count_0 ,
-  double predicted_total_count_1 ,
-  double *total_error_count, 
-  int set
+  int real_classification,          // Actual classification
+  double predicted_total_count_0 ,  // Total predicted count of 0
+  double predicted_total_count_1 ,  // Total predicted count of 1
+  double *total_error_count,        // Output for counting total error
+  int select_data_set               // selected data set for total size
 ){
   
   double size;
-  if(set==0)
+  if(select_data_set==0)
   {
     size = training_data_size;
   }
-  if(set==1)
+  if(select_data_set==1)
   {
     size = testing_data_size;
   }
