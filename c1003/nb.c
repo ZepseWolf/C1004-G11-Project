@@ -19,7 +19,7 @@
 #define total_data_size 100
 #define feature_size 10
 #define PI 3.14159265
-#define NUM_COMMANDS 6
+#define NUM_COMMANDS 7
 
 
 void main();
@@ -64,8 +64,9 @@ void errorCal(
   int select_data_set
 );
 
-
 int training_data_size, testing_data_size;
+
+void plotGraph(double summary[1][5], char* label[5]);
 
 void main(){
     clock_t start,end;
@@ -83,8 +84,6 @@ void main(){
     double total_error_count =0 ;
     int trainingset=0, testingset=1;
     double summary[2][5];
-    char *xAxisPlotTraining[5] = {"50","60","70","80","90"};
-    char *xAxisPlotTesting[5] = {"50","40","30","20","10"};
     char *label[5]={"50/50","60/40","70/30","80/20","90/10"};
     start = clock();
     for(int counter = 0; counter < 5; counter++)
@@ -166,50 +165,16 @@ void main(){
 
 
     printf("\n\nCase \t\tTraining Error \t\tTesting Error");
-
     for(int j=0;j<5;j++)
     {
       printf("\n%s",label[j]);
       printf("\t\t %lf",summary[0][j]);
       printf("\t\t %lf",summary[1][j]);
     }
+    
+    /*print graph for Testing Dataset and error probability*/
+    plotGraph(summary, label);
 
-    char * commandsForGnuplot[] = {"set title \"Testing Dataset\"", 
-    "set xrange [10:50]",
-    "set yrange [0:30]",
-    "set xlabel \"Number of Test Data\"", 
-    "set ylabel \"Error Probability in Percentage\"", 
-    "plot 'data.temp' title 'Testing' linecolor 24 linewidth 2 smooth csplines"};
-    FILE * temp = fopen("data.temp", "w");
-    FILE * gnuPlotting = _popen ("\"C:\\Program Files\\gnuplot\\bin\\gnuplot.exe\" -persistent", "w"); /*to amend the file location as to where your gnuplot.exe lies*/
-    for(int i = 0;i < 5; i++)
-    {
-      fprintf(temp, "%s %f\n", xAxisPlotTesting[i], summary[1][i]);
-    }
-      for (i=0; i < NUM_COMMANDS; i++)
-    {
-      fprintf(gnuPlotting, "%s \n", commandsForGnuplot[i]); //Send commands to gnuplot one by one.
-    }
-    fclose(gnuPlotting);
-
-    /*print graph for Training Dataset and Error Probability */
-    char * commandsForGnuplot2[] = {"set title \"Training Dataset\"", 
-    "set xrange [50:90]",
-    "set yrange [0:30]",
-    "set xlabel \"Number of Training Data\"", 
-    "set ylabel \"Error Probability in Percentage\"", 
-    "plot 'data2.temp' title 'Training' linecolor 24 linewidth 2 smooth csplines"};
-    FILE * temp2 = fopen("data2.temp", "w");
-    FILE * gnuPlot = _popen ("\"C:\\Program Files\\gnuplot\\bin\\gnuplot.exe\" -persistent", "w"); /*to amend the file location as to where your gnuplot.exe lies*/
-    for(int i = 0;i<5; i++)
-    {
-      fprintf(temp2, "%s %f\n", xAxisPlotTraining[i], summary[0][i]);
-    }
-    for (i=0; i < NUM_COMMANDS; i++)
-    {
-      fprintf(gnuPlot, "%s \n", commandsForGnuplot2[i]); //Send commands to gnuplot one by one.
-    }
-    fclose(gnuPlot);
   end = clock();
   cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
   printf("\n\nTime taken: %lf",cpu_time_used);
@@ -569,3 +534,37 @@ void errorCal(
     printf("\n \tNo such classification exist!");
   }
 };
+
+void plotGraph(double summary[1][5],char* label[5])
+{
+  char * commandsForGnuplot[] = {   // Array for gnuplot commands
+    "set title \"Error Probability\"", // Graph title
+    "set xrange [40:100]", // x-axis range from 40 to 100
+    "set yrange [0:30]",    // y-axis range from 0 to 30 
+    "set xlabel \"Number of Test Data (Training:Testing)\"",  // x-axis labels 
+    "set ylabel \"Error Probability in Percentage\"",  //y-axis labels
+    "set xtics ('50:50' 50, '60:40' 60,  '70:30' 70, '80:20' 80 , '90:10' 90)", //Assign x-axis labels to 50:50 to 90:10
+    "plot '$testing' title 'Testing line' linecolor 24 linewidth 2 smooth csplines, '$training' title 'Training line' linecolor 7 linewidth 2 smooth csplines"}; // call gnuplot function to plot graph
+    FILE * gnuPlot = _popen ("\"C:\\Program Files\\gnuplot\\bin\\gnuplot.exe\" -persistent", "w"); // to amend the file location as to where your gnuplot.exe lies
+    
+    fprintf(gnuPlot, "$testing << EOD \n"); //Create a data file for testing set
+    for(int i = 0;i < 5; i++)
+    {
+      fprintf(gnuPlot, "%s %f\n", label[i], summary[1][i]);
+    }
+    fprintf(gnuPlot, "EOD\n"); // End of data feeding to the testing set data file
+
+    fprintf(gnuPlot, "$training << EOD \n"); //Create a data file for training set
+    for(int i = 0;i<5; i++)
+    {
+      fprintf(gnuPlot, "%s %f\n", label[i], summary[0][i]);
+    }
+    fprintf(gnuPlot, "EOD\n"); // End of data feeding to the training set data file
+  
+    for (int i=0; i < NUM_COMMANDS; i++)
+    {
+      fprintf(gnuPlot, "%s \n", commandsForGnuplot[i]); //Send commands to gnuplot one by one.
+    } 
+
+  fclose(gnuPlot);
+}
