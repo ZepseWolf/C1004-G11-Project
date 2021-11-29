@@ -598,7 +598,7 @@ void plotGraph(double summary[1][5], char *label[5])
                                 "set ylabel \"Error Probability in Percentage\"",                                                                                                            //y-axis labels
                                 "set xtics ('50:50' 50, '60:40' 60,  '70:30' 70, '80:20' 80 , '90:10' 90)",                                                                                  //Assign x-axis labels to 50:50 to 90:10
                                 "plot '$testing' title 'Testing line' linecolor 24 linewidth 2 smooth csplines, '$training' title 'Training line' linecolor 7 linewidth 2 smooth csplines"}; // call gnuplot function to plot graph
-  FILE *gnuPlot = _popen("\"C:\\Program Files\\gnuplot\" -persistent", "w");                                                                                                                 // to amend the file location as to where your gnuplot.exe lies
+  FILE *gnuPlot = _popen("\"C:\\Program Files\\gnuplot\\bin\\gnuplot.exe\" -persistent", "w");                                                                                                                 // to amend the file location as to where your gnuplot.exe lies
 
   fprintf(gnuPlot, "$testing << EOD \n"); //Create a data file for testing set
   for (int i = 0; i < 5; i++)
