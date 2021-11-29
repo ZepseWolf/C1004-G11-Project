@@ -146,14 +146,14 @@ void main(){
 
     total_error_count = 0;//reset
 
-    printf("\n\n Using Testing data set:");
+    printf("\n\nUsing Testing data set:");
     testFeature(0, total_testing_count_0 , testing_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
     testFeature(1, total_testing_count_1 , testing_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
     printf("\n \tTotal error for testing set   : %lf %%" ,total_error_count*100/testing_data_size);
     summary[testingset][counter] = total_error_count*100/testing_data_size;
     total_error_count = 0; //reset 
 
-    printf("\n\n Using Training data set:");
+    printf("\n\nUsing Training data set:");
     testFeature(0, total_training_count_0 , training_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
     testFeature(1, total_training_count_1 , training_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
     
