@@ -21,6 +21,7 @@
 #define PI 3.14159265
 #define NUM_COMMANDS 6
 
+
 void main();
 void sortByClassification(
   int totalnum,
@@ -82,9 +83,9 @@ void main(){
     double total_error_count =0 ;
     int trainingset=0, testingset=1;
     double summary[2][5];
+    char *label[5]={"50/50","60/40","70/30","80/20","90/10"};
     char *xAxisPlotTraining[5] = {"50","60","70","80","90"};
     char *xAxisPlotTesting[5] = {"50","40","30","20","10"};
-    char *label[5]={"50/50","60/40","70/30","80/20","90/10"};
     start = clock();
     for(int counter = 0; counter < 5; counter++)
     { switch(counter)
@@ -164,20 +165,15 @@ void main(){
     }
 
 
-<<<<<<< HEAD
-    printf("\n\n\nCase \t\tTraining Error \t\tTesting Error");
-=======
     printf("\n\nCase \t\tTraining Error \t\tTesting Error");
-    for(i=0;i<1;i++)
+
+    for(int j=0;j<5;j++)
     {
->>>>>>> 9b665dcd19b83bf52ade6e1f3a08454b83c1649a
-      for(int j=0;j<5;j++)
-      {
-        printf("\n%s",label[j]);
-        printf("\t\t %lf",summary[i][j]);
-        printf("\t\t %lf",summary[i+1][j]);
-      }
-    /*print graph for Testing Dataset and error probability*/
+      printf("\n%s",label[j]);
+      printf("\t\t %lf",summary[0][j]);
+      printf("\t\t %lf",summary[1][j]);
+    }
+
     char * commandsForGnuplot[] = {"set title \"Testing Dataset\"", 
     "set xrange [10:50]",
     "set yrange [0:30]",
@@ -214,10 +210,10 @@ void main(){
       fprintf(gnuPlot, "%s \n", commandsForGnuplot2[i]); //Send commands to gnuplot one by one.
     }
     fclose(gnuPlot);
-
   end = clock();
   cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
   printf("\n\nTime taken: %lf",cpu_time_used);
+
 }
 
 void sortByClassification( int totalnum ,int *count0 ,int *count1 ,double raw_input[total_data_size][feature_size] ,double input_0[total_data_size][feature_size], double input_1[total_data_size][feature_size]){
@@ -541,7 +537,14 @@ double standardGaussianDis(double x, double sd , double mean){
   return cal;
 }
 
-void errorCal(int real_classification, double predicted_total_count_0 ,double predicted_total_count_1 ,double *total_error_count, int set){
+void errorCal(
+  int real_classification, 
+  double predicted_total_count_0 ,
+  double predicted_total_count_1 ,
+  double *total_error_count, 
+  int set
+){
+  
   double size;
   if(set==0)
   {
