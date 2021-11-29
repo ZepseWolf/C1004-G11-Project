@@ -90,13 +90,13 @@ void main(){
           case 0:
           training_data_size = 50;
           testing_data_size = 50;
-          printf("\n\nFor 50/50");
+          printf("\n\n==========================================================");
+          printf("\n\nFor 50/50 Confusion Matrix");
           break;
 
           case 1:
           training_data_size = 60;
           testing_data_size = 40;
-          printf("\n==========================================================");
           printf("\n\nFor 60/40 Confusion Matrix");
           break;
 
@@ -119,48 +119,47 @@ void main(){
           break;
       }
                                         
-    FILE *file_ptr;
-    file_ptr=fopen("fertility_Diagnosis_Data_Group9_11.txt","r");
-    if (file_ptr==NULL)
-    {
-        printf("\nFile could not be opened \n");
-        exit(1);
+      FILE *file_ptr;
+      file_ptr=fopen("fertility_Diagnosis_Data_Group9_11.txt","r");
+      if (file_ptr==NULL)
+      {
+          printf("\nFile could not be opened \n");
+          exit(1);
+      }
+      for(i=0;i<training_data_size;i++)
+      {   
+          fscanf(file_ptr,"%lf, %lf, %lf , %lf , %lf , %lf , %lf , %lf , %lf , %lf " , &raw_training_input[i][0],&raw_training_input[i][1],&raw_training_input[i][2],&raw_training_input[i][3],&raw_training_input[i][4],&raw_training_input[i][5],&raw_training_input[i][6],&raw_training_input[i][7],&raw_training_input[i][8],&raw_training_input[i][9]); 
+      }
+      for(i=0; i<testing_data_size; i++)
+      { 
+        fscanf(file_ptr,"%lf, %lf, %lf , %lf , %lf , %lf , %lf , %lf , %lf , %lf " , &raw_testing_input[i][0],&raw_testing_input[i][1],&raw_testing_input[i][2],&raw_testing_input[i][3],&raw_testing_input[i][4],&raw_testing_input[i][5],&raw_testing_input[i][6],&raw_testing_input[i][7],&raw_testing_input[i][8],&raw_testing_input[i][9]); 
+      }
+
+      fclose(file_ptr);
+
+      sortByClassification( training_data_size , &total_training_count_0, &total_training_count_1 , raw_training_input , training_input_0 , training_input_1); // Output will be count0 , count1 , training_input_0, training_input_1
+      sortByClassification( testing_data_size , &total_testing_count_0, &total_testing_count_1 , raw_testing_input , testing_input_0 , testing_input_1); // Output will be count0 , count1 , training_input_0, training_input_1
+      
+      trainFeature(total_training_count_0 ,training_input_0,calculated_training_0 );
+      trainFeature(total_training_count_1 ,training_input_1,calculated_training_1 );
+
+      total_error_count = 0;//reset
+
+      printf("\n\nUsing Testing data set:");
+      testFeature(0, total_testing_count_0 , testing_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
+      testFeature(1, total_testing_count_1 , testing_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
+      printf("\n \tTotal error for testing set   : %lf %%" ,total_error_count*100/testing_data_size);
+      summary[testingset][counter] = total_error_count*100/testing_data_size;
+      total_error_count = 0; //reset 
+
+      printf("\n\nUsing Training data set:");
+      testFeature(0, total_training_count_0 , training_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
+      testFeature(1, total_training_count_1 , training_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
+      
+      printf("\n \tTotal error for training set   : %lf %%" ,total_error_count*100/training_data_size);
+      printf("\n\n==========================================================");
+      summary[trainingset][counter]=total_error_count*100/training_data_size;
     }
-    for(i=0;i<training_data_size;i++)
-    {   
-        fscanf(file_ptr,"%lf, %lf, %lf , %lf , %lf , %lf , %lf , %lf , %lf , %lf " , &raw_training_input[i][0],&raw_training_input[i][1],&raw_training_input[i][2],&raw_training_input[i][3],&raw_training_input[i][4],&raw_training_input[i][5],&raw_training_input[i][6],&raw_training_input[i][7],&raw_training_input[i][8],&raw_training_input[i][9]); 
-    }
-    for(i=0; i<testing_data_size; i++)
-    { 
-       fscanf(file_ptr,"%lf, %lf, %lf , %lf , %lf , %lf , %lf , %lf , %lf , %lf " , &raw_testing_input[i][0],&raw_testing_input[i][1],&raw_testing_input[i][2],&raw_testing_input[i][3],&raw_testing_input[i][4],&raw_testing_input[i][5],&raw_testing_input[i][6],&raw_testing_input[i][7],&raw_testing_input[i][8],&raw_testing_input[i][9]); 
-    }
-    fclose(file_ptr);
-    
-
-
-    sortByClassification( training_data_size , &total_training_count_0, &total_training_count_1 , raw_training_input , training_input_0 , training_input_1); // Output will be count0 , count1 , training_input_0, training_input_1
-    sortByClassification( testing_data_size , &total_testing_count_0, &total_testing_count_1 , raw_testing_input , testing_input_0 , testing_input_1); // Output will be count0 , count1 , training_input_0, training_input_1
-    
-    trainFeature(total_training_count_0 ,training_input_0,calculated_training_0 );
-    trainFeature(total_training_count_1 ,training_input_1,calculated_training_1 );
-
-    total_error_count = 0;//reset
-
-    printf("\n\nUsing Testing data set:");
-    testFeature(0, total_testing_count_0 , testing_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
-    testFeature(1, total_testing_count_1 , testing_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
-    printf("\n \tTotal error for testing set   : %lf %%" ,total_error_count*100/testing_data_size);
-    summary[testingset][counter] = total_error_count*100/testing_data_size;
-    total_error_count = 0; //reset 
-
-    printf("\n\nUsing Training data set:");
-    testFeature(0, total_training_count_0 , training_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
-    testFeature(1, total_training_count_1 , training_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
-    
-    printf("\n \tTotal error for training set   : %lf %%" ,total_error_count*100/training_data_size);
-    printf("\n\n==========================================================");
-    summary[trainingset][counter]=total_error_count*100/training_data_size;
-  }
 
 
     printf("\n\nCase \t\tTraining Error \t\tTesting Error");
