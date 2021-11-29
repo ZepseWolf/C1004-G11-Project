@@ -115,7 +115,7 @@ void main(){
           case 4:
           training_data_size = 90;
           testing_data_size = 10;
-          printf("\n\n    For 90/10 Confusion Matrix");
+          printf("\n\nFor 90/10 Confusion Matrix");
           break;
       }
                                         
