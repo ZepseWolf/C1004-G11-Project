@@ -92,31 +92,32 @@ void main(){
           case 0:
           training_data_size = 50;
           testing_data_size = 50;
-          printf("\n\n    For 50/50");
+          printf("\n\nFor 50/50");
           break;
 
           case 1:
           training_data_size = 60;
           testing_data_size = 40;
-          printf("\n\n    For 60/40");
+          printf("\n==========================================================");
+          printf("\n\nFor 60/40 Confusion Matrix");
           break;
 
           case 2:
           training_data_size = 70;
           testing_data_size = 30;
-          printf("\n\n    For 70/30");
+          printf("\n\nFor 70/30 Confusion Matrix");
           break;
 
           case 3:
           training_data_size = 80;
           testing_data_size = 20;
-          printf("\n\n    For 80/20");
+          printf("\n\nFor 80/20 Confusion Matrix");
           break;
 
           case 4:
           training_data_size = 90;
           testing_data_size = 10;
-          printf("\n\n    For 90/10");
+          printf("\n\nFor 90/10 Confusion Matrix");
           break;
       }
                                         
@@ -124,7 +125,7 @@ void main(){
     file_ptr=fopen("fertility_Diagnosis_Data_Group9_11.txt","r");
     if (file_ptr==NULL)
     {
-        printf("File could not be opened \n");
+        printf("\nFile could not be opened \n");
         exit(1);
     }
     for(i=0;i<training_data_size;i++)
@@ -147,24 +148,30 @@ void main(){
 
     total_error_count = 0;//reset
 
-    printf("\n =========================Confusion Matrix Start=========================");
+    printf("\n\nUsing Testing data set:");
     testFeature(0, total_testing_count_0 , testing_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
     testFeature(1, total_testing_count_1 , testing_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, testingset);
-    printf("\n ==========================Confusion Matrix End =========================");
-    printf("\n Total error for testing set   : %lf %%" ,total_error_count*100/testing_data_size);
+    printf("\n \tTotal error for testing set   : %lf %%" ,total_error_count*100/testing_data_size);
     summary[testingset][counter] = total_error_count*100/testing_data_size;
     total_error_count = 0; //reset 
 
-    printf("\n\n =========================Confusion Matrix Start=========================");
+    printf("\n\nUsing Training data set:");
     testFeature(0, total_training_count_0 , training_input_0 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
     testFeature(1, total_training_count_1 , training_input_1 , calculated_training_0,calculated_training_1,&total_error_count,total_training_count_0, total_training_count_1, trainingset);
-    printf("\n ==========================Confusion Matrix End =========================");
-    printf("\n Total error for training set   : %lf %%" ,total_error_count*100/training_data_size);
+    
+    printf("\n \tTotal error for training set   : %lf %%" ,total_error_count*100/training_data_size);
+    printf("\n\n==========================================================");
     summary[trainingset][counter]=total_error_count*100/training_data_size;
   }
 
 
+<<<<<<< HEAD
     printf("\n\n\nCase \t\tTraining Error \t\tTesting Error");
+=======
+    printf("\n\nCase \t\tTraining Error \t\tTesting Error");
+    for(i=0;i<1;i++)
+    {
+>>>>>>> 9b665dcd19b83bf52ade6e1f3a08454b83c1649a
       for(int j=0;j<5;j++)
       {
         printf("\n%s",label[j]);
@@ -548,15 +555,15 @@ void errorCal(int real_classification, double predicted_total_count_0 ,double pr
   // Real vs predicted , recorded down 
   if(real_classification == 0){
     *total_error_count += predicted_total_count_1;
-    printf("\n True negatives  : %lf %%",predicted_total_count_0*100/size);
-    printf("\n False positives : %lf %%",predicted_total_count_1*100/size);
+    printf("\n \tTrue negatives  : %lf %%",predicted_total_count_0*100/size);
+    printf("\n \tFalse positives : %lf %%",predicted_total_count_1*100/size);
   }
   else if(real_classification == 1){
     *total_error_count += predicted_total_count_0;
-    printf("\n True positives  : %lf %%",predicted_total_count_1*100/size);
-    printf("\n False negatives : %lf %%",predicted_total_count_0*100/size);
+    printf("\n \tTrue positives  : %lf %%",predicted_total_count_1*100/size);
+    printf("\n \tFalse negatives : %lf %%",predicted_total_count_0*100/size);
   }
   else{
-    printf("\n No such classification exist!");
+    printf("\n \tNo such classification exist!");
   }
 };
