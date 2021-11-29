@@ -83,9 +83,9 @@ void main(){
     double total_error_count =0 ;
     int trainingset=0, testingset=1;
     double summary[2][5];
-    char *label[5]={"50/50","60/40","70/30","80/20","90/10"};
     char *xAxisPlotTraining[5] = {"50","60","70","80","90"};
     char *xAxisPlotTesting[5] = {"50","40","30","20","10"};
+    char *label[5]={"50/50","60/40","70/30","80/20","90/10"};
     start = clock();
     for(int counter = 0; counter < 5; counter++)
     { switch(counter)
@@ -170,8 +170,8 @@ void main(){
     for(int j=0;j<5;j++)
     {
       printf("\n%s",label[j]);
-      printf("\t\t %lf",summary[0][j]);
-      printf("\t\t %lf",summary[1][j]);
+      printf("\t\t %lf",summary[i][j]);
+      printf("\t\t %lf",summary[i+1][j]);
     }
 
     char * commandsForGnuplot[] = {"set title \"Testing Dataset\"", 
